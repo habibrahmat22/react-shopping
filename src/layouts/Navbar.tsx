@@ -1,9 +1,10 @@
 import { Disclosure, Menu, Transition } from "@headlessui/react"
 import { ShoppingCartIcon ,BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline"
-import React, { Fragment } from "react"
+import React, { Fragment, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, matchPath, useLocation, useNavigate } from "react-router-dom"
 import { logOut } from "../store/auth/actions"
+import { getAllProductsCart } from "../store/products/actions"
 import { RootState } from "../store/reducers"
 
 const classNames = (...classes) => {
@@ -12,12 +13,21 @@ const classNames = (...classes) => {
 
 const Navbar: React.FC = () => {
   const isLoggedIn = useSelector((state: RootState) => state?.auth.isLoggedIn)
+  const productsCart  = useSelector((state: RootState) => state.products.productsCart);
   const dispatch = useDispatch()
   const location = useLocation()
   const navigate = useNavigate()
   const isActive = (path: string) => {
     return !!matchPath(location.pathname, path)
   }
+  useEffect(() => {
+    dispatch(getAllProductsCart())
+  }, [dispatch])
+  useEffect(() => {
+  if(productsCart.length > 0){
+    console.log("🚀 ~ useEffect ~ productsCart:", productsCart)
+  }
+  }, [productsCart])
 
   const handleLogOut = async (e) => {
     e.preventDefault()

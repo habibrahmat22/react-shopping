@@ -5,16 +5,15 @@
 
 ### Requirements:
 - Nodejs
-- Yarn (as dependency manager) `npm i -g yarn`
+
 
 ##### Installation
 
 > The application can be installed using the following steps:
 - Change the directory to the cloned repository: `cd app`
-- Install dependencies: `yarn` `(npm install) if yarn is not installed`
-- Run the application: `yarn start`
+- Run the application: `npm start`
 - Open the application: `http://localhost:3000`
-- Running tests: `yarn test`
+- Running tests: `npm test`
 
 #### Login Credentials:
 - We have used FakeStoreAPI for the basic authentication.

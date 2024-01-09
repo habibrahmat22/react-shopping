@@ -1,4 +1,4 @@
-import { SET_BOOKMARKS, SET_FILTERED_PRODUCTS, SET_PRODUCTS, SET_SINGLE_PRODUCT } from "./type"
+import { SET_ADD_TO_CART,SET_BOOKMARKS, SET_FILTERED_PRODUCTS, SET_PRODUCTS, SET_SINGLE_PRODUCT, SET_PRODUCTS_CART} from "./type"
 import Api from "../../common/helpers/Api"
 
 /**
@@ -110,4 +110,38 @@ export const toggleBookmark = (productId: number) => async (dispatch, getState) 
     type: SET_BOOKMARKS,
     payload: bookmarkIds,
   })
+}
+
+/**
+ * add product to cart.
+ */
+
+export const addProductTocart = (products) => async (dispatch) => {
+
+  try {
+    const response = await Api.post(`/carts`, {userId:products.userId,date:products.date,products:products})
+    dispatch({
+      type: SET_ADD_TO_CART,
+      payload: response.data,
+    })
+    dispatch(getAllProductsCart())
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+/**
+ * Fetch all the products from the API.
+ */
+export const getAllProductsCart = () => async (dispatch,getState) => {
+  const user = getState().auth.currentUser
+  try {
+    const response = await Api.get(`/carts/user/${JSON.parse(user as string).id}`)
+    dispatch({
+      type: SET_PRODUCTS_CART,
+      payload: response.data,
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }

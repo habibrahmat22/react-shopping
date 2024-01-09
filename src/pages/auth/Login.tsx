@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { ICredentials } from "../../interfaces/Auth"
 import Loader from "../../common/components/Loader"
 import { attemptLogin } from "../../store/auth/actions"
+import {getAllProductsCart} from "../../store/products/actions"
 import { RootState } from "../../store/reducers"
 
 const Login: React.FC = () => {
@@ -43,6 +44,7 @@ const Login: React.FC = () => {
 
     dispatch(
       attemptLogin(credentials, handleOnSuccess, (error) => {
+        (dispatch(getAllProductsCart()))
         setLoading(false)
         if (error.response.status === 401) {
           setCredentials(initialCredentials)

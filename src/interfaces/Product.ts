@@ -11,6 +11,15 @@ export interface IProduct {
   }
 }
 
+export interface IResultAddToCart {
+  id : number
+  userId : number
+  date  : string
+  products : {
+    productId : number
+    quantity : number
+  }
+}
 export interface IFilterParams {
   q: string
   category: string[]

@@ -2,22 +2,41 @@ import { HeartIcon, StarIcon } from "@heroicons/react/outline"
 import { HeartIcon as HeartIconSolid, StarIcon as StarIconSolid } from "@heroicons/react/solid"
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
-import { toggleBookmark } from "../../../store/products/actions"
+import { toggleBookmark, addProductTocart } from "../../../store/products/actions"
 import { RootState } from "../../../store/reducers"
 import { IProduct } from "../../../interfaces/Product"
-
+import { ShoppingBagIcon } from "@heroicons/react/outline"
+import moment from 'moment'
 interface Props {
   product: IProduct
+}
+interface   IDataSend{
+  userId : number ;
+  date : string ;
+  products:[{
+    productId : number
+    quantity : number
+  }]
 }
 
 const SingleProduct = ({ product }: Props) => {
   const bookmarkIds: number[] = useSelector((state: RootState) => state.products.bookmarkedIds)
+  const currentUser = useSelector((state: RootState) => state.auth.currentUser)
   const dispatch = useDispatch()
 
   const handleBookmarkChange = (e) => {
     dispatch(toggleBookmark(product.id))
   }
-
+  const  handleAddCart =(id) =>{
+    // addProductTocart
+    const userData  = JSON.parse(currentUser)
+    const dataSend :IDataSend = {
+      userId:userData.id,
+      date:moment().format("YYYY-MM-DD"),
+      products:[{productId:id,quantity:1}]
+  }
+  dispatch(addProductTocart(dataSend))
+  }
   return (
     <>
       <div key={product.id} className="relative p-5 shadow hover:shadow-xl rounded-md">
@@ -36,6 +55,7 @@ const SingleProduct = ({ product }: Props) => {
           />
         </div>
         <div className="mt-4 flex flex-col justify-between">
+          <p className="mt-1 text-sm text-white mb-4 font-bold text-center bg-teal-300">{product.category.toUpperCase()}</p>
           <h3 className="text-sm text-gray-700 text-ellipsis truncate" title={product.title}>
             <Link to={`/products/${product.id}`}>
               <span aria-hidden="true" className="absolute inset-0" />
@@ -43,7 +63,7 @@ const SingleProduct = ({ product }: Props) => {
             </Link>
           </h3>
 
-          <p className="mt-1 flex gap-1 items-center text-sm text-gray-500">
+          <p className="mt-1 flex gap-1 mb-5 items-center text-sm text-gray-500">
             {[0, 1, 2, 3, 4].map((rating) => (
               <>
                 {Math.floor(product?.rating.rate) > rating ? (
@@ -62,10 +82,14 @@ const SingleProduct = ({ product }: Props) => {
               </>
             ))}
             {/* <Rating value={product.rating.rate}  /> */}
-            {product.rating.count}
+            | {product.rating.count}
           </p>
-          <p className="text-sm mt-[5px] font-medium text-gray-900">${product.price}</p>
-          <p className="mt-1 text-sm text-green-600">{product.category.toUpperCase()}</p>
+          <div className="flex">
+          <p className="text-sm mt-[5px]  font-medium text-gray-900">${product.price}</p>
+          <button onClick={()=> handleAddCart(product.id)} className="absolute right-6   ml-auto text-white bg-teal-500  border-transparent border-0  py-1 px-2  hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-50 rounded">
+          <ShoppingBagIcon className="h-6 w-6" aria-hidden="true" />
+          </button>
+          </div>
         </div>
       </div>
     </>
